@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+		<title>Tool Configuration</title>
+		<style>
+			body {
+				font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+				margin: 40px auto;
+				max-width: 1000px;
+				background-color: #f8f9fa;
+			}
+
+			h1 {
+				text-align: center;
+				color: #343a40;
+				margin-bottom: 20px;
+			}
+
+			table {
+				width: 100%;
+				max-width: 1000px;
+				margin: 0 auto;
+				border-collapse: collapse;
+				background-color: white;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+				border-radius: 8px;
+				overflow: hidden;
+			}
+
+			thead {
+				font-size: larger;
+			}
+
+			tbody {
+				font-size: medium;
+			}
+
+			th,
+			td {
+				padding: 12px 15px;
+				border: 1px solid #ddd;
+				text-align: left;
+				vertical-align: top;
+				word-wrap: break-word;
+				white-space: normal;
+				overflow-wrap: break-word;
+			}
+
+			th {
+				background-color: #3d3d3d;
+				color: white;
+				font-weight: bold;
+			}
+
+			td {
+				max-width: 200px; /* Adjust the max width to prevent long content */
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			tr:nth-child(even) {
+				background-color: #f2f2f2;
+			}
+
+			tr:hover {
+				background-color: #e9ecef;
+			}
+			button {
+				padding: 8px 12px;
+				margin-bottom: 8px;
+				font-size: 14px;
+				border: none;
+				border-radius: 5px;
+				cursor: pointer;
+				transition: background-color 0.2s ease;
+			}
+			.save-btn {
+				background-color: #47a22c;
+				color: white;
+			}
+			.delete-btn,
+			.remove-url-btn,
+			.cancel-btn {
+				background-color: #f44336;
+				color: white;
+			}
+			.add-btn,
+			.add-url-btn {
+				background-color: #369ef4;
+				color: white;
+			}
+			.edit-btn,
+			.reset-btn {
+				background-color: #dedede;
+				color: rgb(0, 0, 0);
+			}
+
+			button i {
+				margin-right: 8px; /* Adjust the spacing as needed */
+				vertical-align: middle;
+				display: inline-block;
+				vertical-align: middle;
+				font-style: normal;
+			}
+			button:hover {
+				background-color: #777777;
+			}
+			.button-row {
+				margin: 20px 0;
+			}
+
+			#toolModal {
+				display: none;
+				position: fixed;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				width: 50%;
+				max-height: 80vh;
+				background: white;
+				border: 1px solid #ccc;
+				border-radius: 10px;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+				z-index: 1000;
+				overflow: hidden;
+				padding: 16px;
+			}
+
+			#toolModal input[type="text"],
+			#toolModal textarea {
+				width: calc(100% - 20px); /* Adjust to avoid right-side overlap */
+				box-sizing: border-box; /* Include padding and border in the width calculation */
+				margin-bottom: 10px;
+				padding: 8px;
+			}
+
+			#toolModal .remove-url-btn {
+				margin-bottom: 8px;
+			}
+
+			#toolModal button {
+				margin-right: 10px;
+			}
+
+			.modal-body {
+				padding: 20px;
+				margin-bottom: 16px;
+				max-height: 60vh; /* Limit height of the scrollable area */
+				overflow-y: auto; /* Make this section scrollable */
+				background-color: #e5e5e5;
+				border-radius: 12px;
+			}
+
+			.modal-body {
+				padding: 20px;
+				max-height: 60vh; /* Limit height of the scrollable area */
+				overflow-y: auto; /* Make this section scrollable */
+			}
+			label {
+				display: block;
+				margin: 10px 0 5px;
+			}
+
+			input,
+			select,
+			textarea {
+				width: 100%;
+				padding: 10px;
+				margin-bottom: 10px;
+				border: 1px solid #ccc;
+				border-radius: 5px;
+				font-size: 14px;
+			}
+
+			.url-row {
+				display: flex;
+				align-items: center;
+				margin-bottom: 10px;
+			}
+
+			.url-row input {
+				flex: 1;
+				margin-right: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>SOC Multi-tool Configuration</h1>
+
+		<div class="button-row">
+			<button class="button add-btn" id="addToolBtn"><i class="fas fa-plus-circle"></i>Add New Tool</button>
+			<button class="button reset-btn" id="resetBtn"><i class="fas fa-undo"></i>Reset to Default</button>
+		</div>
+
+		<table id="toolTable">
+			<thead>
+				<tr>
+					<th>Tool Name</th>
+					<th>Mode</th>
+					<th>URLs</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- Rows will be dynamically added here -->
+			</tbody>
+		</table>
+
+		<!-- Modal for adding/editing tool -->
+		<div id="toolModal" class="modal">
+			<div class="modal-content">
+				<h2 id="modalTitle">Add/Edit Tool</h2>
+
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="toolName">Tool Name:</label>
+						<input type="text" id="toolName" placeholder="Enter tool name" />
+					</div>
+
+					<div class="form-group">
+						<label for="toolMode">Mode:</label>
+						<select id="toolMode">
+							<option value="multi">Multi</option>
+							<option value="single">Single</option>
+						</select>
+					</div>
+
+					<h3>Tool Resources:</h3>
+					<div id="urlContainer">
+						<h3>URLs:</h3>
+						<div class="url-entry">
+							<label>Link Name:</label>
+							<input type="text" class="url-name" placeholder="Enter link name" />
+
+							<label>Link URL:</label>
+							<input type="text" class="url-link" placeholder="Enter link URL" />
+
+							<button class="remove-url-btn"><i class="fa fa-trash-alt"></i> Remove URL</button>
+						</div>
+					</div>
+
+					<button id="addUrlBtn" class="add-url-btn"><i class="fa fa-plus"></i> Add Another URL</button>
+				</div>
+
+				<div class="modal-footer">
+					<button id="saveToolBtn" class="save-btn"><i class="fa fa-save"></i> Save</button>
+					<button id="closeModalBtn" class="cancel-btn"><i class="fa fa-times"></i> Cancel</button>
+				</div>
+			</div>
+		</div>
+		<script src="../js/options.js" defer></script>
+	</body>
+</html>
