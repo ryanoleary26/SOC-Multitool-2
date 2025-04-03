@@ -115,16 +115,48 @@ document.addEventListener('DOMContentLoaded', () => {
     const toolName = document.getElementById('toolName').value.trim();
     const toolMode = document.getElementById('toolMode').value;
     const urlEntries = document.querySelectorAll('.url-entry');
+    const urlPattern = /^(https?:\/\/[^\s$.?#].[^\s]*)$/; // Regex for URL validation
 
     if (!toolName) {
       alert('Tool name is required.');
       return;
     }
 
-    const urls = Array.from(urlEntries).map(entry => ({
-      name: entry.querySelector('.url-name').value.trim(),
-      link: entry.querySelector('.url-link').value.trim()
-    })).filter(url => url.name && url.link);
+    console.log("Tool URLs: ", urlEntries);
+    
+    const urls = Array.from(urlEntries).map(entry => {
+      const name = entry.querySelector('.url-name').value.trim();
+      const link = entry.querySelector('.url-link').value.trim();
+
+      // Check for blank fields
+      if (!name || !link) {
+        alert('All fields for each tool entry must be filled out.');
+        throw new Error('Validation failed: Blank fields detected.');
+      }
+
+      return { name, link };
+    });
+
+    if (urls.length === 0) {
+      alert('You must provide details of at least one tool resource - Name and URL.');
+      return;
+    } 
+
+    for (var i = 0; i < urls.length; i++) {
+      if (urlPattern.test(urls[i].link) === false) {
+        alert(`The URL for "${urls[i].name}" is not valid. Please enter a valid URL.`);
+        return;
+      }
+      if (!urls[i].name || !urls[i].link) {
+        alert('Please fill in all fields for each tool entry.');
+        return;
+      }
+    }
+
+    console.log("Printing captured data")
+    console.log("Tool Name: ", toolName);
+    console.log("Tool Mode: ", toolMode);
+    console.log("Tool URLs: ", urls);
 
     chrome.storage.local.get('toolConfig', (data) => {
       let config = data.toolConfig || { tools: {} };
