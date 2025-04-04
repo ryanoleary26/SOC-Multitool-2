@@ -8,7 +8,7 @@ function loadDefaultConfig(callback) {
         .then((response) => response.json())
         .then((defaultConfig) => {
             chrome.storage.local.set({ toolConfig: defaultConfig }, () => {
-                console.log("Default config loaded.");
+                // console.log("Default config loaded.");
                 if (callback) callback(defaultConfig);
             });
         })
@@ -17,7 +17,7 @@ function loadDefaultConfig(callback) {
 
 function clearContextMenus(callback) {
     chrome.contextMenus.removeAll(() => {
-        console.log("All context menus removed.");
+        // console.log("All context menus removed.");
         setTimeout(callback, 100); // Delay to ensure all menus are truly removed
     });
 }
@@ -27,7 +27,7 @@ let isInitializing = false;
 
 function initializeContextMenu() {
     if (isInitializing) {
-        console.log("Context menu initialization already in progress.");
+        // console.log("Context menu initialization already in progress.");
         return;
     }
     isInitializing = true;
@@ -71,7 +71,7 @@ function initializeContextMenu() {
                     }
                 });
 
-                console.log("Context menus initialized.");
+                // console.log("Context menus initialized.");
             } else {
                 console.error("Invalid config format:", config);
             }
@@ -87,25 +87,25 @@ chrome.runtime.onStartup.addListener(initializeContextMenu);
 
 chrome.storage.onChanged.addListener((changes, namespace) => {
     if (namespace === 'local' && changes.toolConfig) {
-        console.log(`[${new Date().toLocaleString()}] toolConfig changed, updating context menu...`);
+        // console.log(`[${new Date().toLocaleString()}] toolConfig changed, updating context menu...`);
         initializeContextMenu();
     }
 });
 
 chrome.contextMenus.onClicked.addListener((info) => {
     chrome.storage.local.get('toolConfig', (data) => {
-        console.log("Tool item clicked");
+        // console.log("Tool item clicked");
         const config = data.toolConfig;
 
         let toolKey = info.menuItemId.split('_url_')[0];
-        console.log("Tool key: " + toolKey);
+        // console.log("Tool key: " + toolKey);
 
         const tool = config.tools[toolKey];
-        console.log("Tool: " + JSON.stringify(tool));
+        // console.log("Tool: " + JSON.stringify(tool));
 
         if (config && typeof config.tools === 'object' && tool) {
             const encodedText = encodeURIComponent(info.selectionText);
-            console.log("Tool mode: " + tool.mode);
+            // console.log("Tool mode: " + tool.mode);
 
             if (tool.mode === "multi") {
                 tool.urls.forEach((urlObj) => {
@@ -121,10 +121,10 @@ chrome.contextMenus.onClicked.addListener((info) => {
                 });
             } else if (tool.mode === "single" && info.menuItemId.includes('_url_')) {
                 const urlIndex = parseInt(info.menuItemId.split('_url_')[1], 10);
-                console.log("URL Index: " + urlIndex);
+                // console.log("URL Index: " + urlIndex);
 
                 const urlObj = tool.urls[urlIndex];
-                console.log("URL Object: " + urlObj);
+                // console.log("URL Object: " + urlObj);
 
                 if (urlObj && urlObj.link) {
                     let fullUrl = urlObj.link;
