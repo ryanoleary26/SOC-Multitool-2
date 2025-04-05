@@ -1,0 +1,32 @@
+{
+    "manifest_version": 3,
+    "name": "SOC Multitool v2",
+    "version": "1.0",
+    "description": "A tool for quick lookups of IPs, domains, and more.",
+    "permissions": [
+        "contextMenus",
+        "storage",
+        "tabs"
+    ],
+    "background": {
+        "scripts": ["js/contextMenu.js"],
+        "type": "module"
+    },
+    "icons": {
+        "16": "/icons/icon16.png",
+        "48": "/icons/icon48.png",
+        "128": "/icons/icon128.png"
+    },
+    "action": {
+        "default_icon": "/icons/icon128.png"
+    },
+    "options_ui": {
+        "page": "options/options.html",
+        "open_in_tab": true
+    },
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "developer@ryanoleary.co.uk"
+        }
+    }
+}
