@@ -5,8 +5,7 @@
     "description": "A tool for quick lookups of IPs, domains, and more.",
     "permissions": [
         "contextMenus",
-        "storage",
-        "tabs"
+        "storage"
     ],
     "background": {
         "service_worker": "js/contextMenu.js",
